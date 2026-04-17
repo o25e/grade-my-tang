@@ -1,12 +1,12 @@
 import { useGameState } from "./hooks/useGameState";
-import TitleScreen        from "./screens/TitleScreen";
-import InstructionsScreen from "./screens/InstructionsScreen";
-import IngredientsScreen  from "./screens/IngredientsScreen";
-import SpiceScreen        from "./screens/SpiceScreen";
-import SauceScreen        from "./screens/SauceScreen";
-import ResultScreen       from "./screens/ResultScreen";
+import TitleScreen        from "./components/Screens/TitleScreen";
+import InstructionsScreen from "./components/Screens/InstructionsScreen";
+import IngredientsScreen  from "./components/Screens/IngredientsScreen";
+import SpiceScreen        from "./components/Screens/SpiceScreen";
+import SauceScreen        from "./components/Screens/SauceScreen";
+import ResultScreen       from "./components/Result/ResultScreen";
 
-export default function MaratangGame() {
+export default function App() {
   const {
     screen, setScreen,
     selectedIngredients,
