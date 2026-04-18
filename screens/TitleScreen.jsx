@@ -61,7 +61,7 @@ export default function TitleScreen({ onStart, onInstructions }) {
         </div>
       </div>
 
-      <p className="relative z-10 mt-5 text-orange-700 text-xs font-bold opacity-60">© 2024 Animal League</p>
+      <p className="relative z-10 mt-5 text-orange-700 text-xs font-bold opacity-60">© 2026 Animal League</p>
     </div>
   );
 }
