@@ -32,17 +32,17 @@ export default function TitleScreen({ onStart, onInstructions }: TitleScreenProp
           <div className="relative bg-sky-100 border-2 border-sky-300 rounded-2xl rounded-tl-none p-3 shadow">
             <div className="absolute -left-3 top-4 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-sky-300"/>
             <p className="text-xs font-bold text-gray-800 leading-relaxed">
-              마라탕으로 승부를 결정하자!<br/>
-              진정한 <span className="text-red-600 font-black">마라탕</span>을<br/>맛 보여주겠어!
+              학생, 마라탕 한 그릇만 말아주게.<br/>
+              진정한 <span className="text-red-600 font-black">마라탕</span>의<br/>맛을 보여주게나.
             </p>
           </div>
         </div>
 
         {/* title text */}
         <div className="text-center mb-7">
-          <p className="text-sm font-bold text-gray-500 mb-1">🎓 대학가 전설의</p>
+          <p className="text-sm font-bold text-gray-500 mb-1">🎓 긴급 미션!</p>
           <h1 className="text-2xl font-black text-red-700 leading-tight drop-shadow-sm">
-            교수님도 울고 갈<br/>
+            교수님을 만족시켜라<br/>
             <span className="text-3xl text-orange-600">마라탕 시뮬레이터</span>
           </h1>
         </div>
@@ -54,14 +54,14 @@ export default function TitleScreen({ onStart, onInstructions }: TitleScreenProp
             className="w-full bg-red-500 hover:bg-red-600 active:scale-95 active:border-b-0 active:translate-y-1
                        text-white font-black text-xl py-4 rounded-2xl
                        border-b-4 border-red-800 shadow-md transition-all duration-75">
-            🍜 &nbsp;게임 시작
+             &nbsp;게임 시작
           </button>
           <button
             onClick={onInstructions}
             className="w-full bg-orange-400 hover:bg-orange-500 active:scale-95 active:border-b-0 active:translate-y-1
                        text-white font-black text-xl py-4 rounded-2xl
                        border-b-4 border-orange-700 shadow-md transition-all duration-75">
-            📖 &nbsp;게임 방법
+            &nbsp;게임 방법
           </button>
         </div>
       </div>

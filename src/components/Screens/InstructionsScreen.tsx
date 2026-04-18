@@ -17,11 +17,11 @@ export default function InstructionsScreen({ onBack }: InstructionsScreenProps) 
     },
     {
       n: "2",
-      text: <>단계별로 ▶ 버튼을 눌러 다음 단계로 간다.<br/>재료 최소 <strong>5개</strong>, 소스 최소 <strong>2개</strong> 이상 선택해야 한다.</>,
+      text: <>단계별로 있는 버튼을 눌러 그 단계를 마무리 한다. ▶ 버튼을 눌러 다음 단계로 간다.<br/>재료 최소 <strong>5개</strong>, 소스 최소 <strong>2개</strong> 이상 선택해야 한다.</>,
     },
     {
       n: "3",
-      text: <>마라탕 맛은 재료·맵기·소스 조합에 따라 결정되며, 교수님의 <span className="text-red-600 font-black">학점</span>이 결정된다!</>,
+      text: <>마라탕 맛은 재료·맵기·소스 조합에 따라 결정된다. 교수님을 만족시켜 최고의 <span className="text-red-600 font-black">평가</span>를 받자!</>,
     },
   ];
 
