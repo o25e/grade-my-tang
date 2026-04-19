@@ -24,7 +24,7 @@ export default function WarningModal({ message, visible }: WarningModalProps) {
           border: "2px dashed #C084FC",
           boxShadow: "0 8px 32px rgba(139,92,246,0.25), 0 2px 8px rgba(0,0,0,0.15)",
           minWidth: "200px",
-          maxWidth: "280px",
+          maxWidth: "350px",
         }}
       >
         {/* 경고 라벨 뱃지 */}
@@ -45,7 +45,7 @@ export default function WarningModal({ message, visible }: WarningModalProps) {
           className="text-center font-bold leading-snug mt-2 whitespace-pre-line"
           style={{
             color: "#9B2C2C",
-            fontSize: "15px",
+            fontSize: "30px",
           }}
         >
           {message}
