@@ -27,6 +27,7 @@ export default function ResultScreen({
 }: ResultScreenProps) {
   const { playPop, playBoom, playText } = useSound();
   const [restartHovered, setRestartHovered] = useState(false);
+  const [isFinalMessage, setIsFinalMessage] = useState(false);
   const [bgReady, setBgReady] = useState(() => {
     const img = new Image();
     img.src = "/img/screen/game_result.png";
@@ -38,6 +39,12 @@ export default function ResultScreen({
     const boomId = setTimeout(playBoom, 5200);
     return () => { ids.forEach(clearTimeout); clearTimeout(boomId); };
   }, [playText, playBoom]);
+
+  useEffect(() => {
+    if (ending.score === 100) return;
+    const id = setTimeout(() => { setIsFinalMessage(true); playText(); }, 7200);
+    return () => clearTimeout(id);
+  }, [ending.score, playText]);
   const isMalatangGood = ending.score > 50;
   const isSauceGood =
     !selectedSauces.includes("cilantro") && !selectedSauces.includes("mintchoco");
@@ -51,6 +58,12 @@ export default function ResultScreen({
   const gradeColor = GRADE_COLORS[ending.grade] ?? "#6B7280";
 
   const [c0, c1, c2] = ending.comments;
+
+  const finalMessage =
+    ending.score >= 90 ? "거의 완벽했어. 최상의 맛으로 다시 한번 더 말아주게!" :
+    ending.score >= 60 ? "나쁘진 않아.. 좀 더 맛있게 다시 한번 말아주게!" :
+    ending.score >= 30 ? "흠.. 정말 최선이었나? 다시 말아주게나." :
+    "정말 맛이 없군!!! 다시 말아오게.";
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden" style={{ visibility: bgReady ? "visible" : "hidden" }}>
@@ -138,24 +151,36 @@ export default function ResultScreen({
             className="absolute flex flex-col justify-center gap-2 px-6"
             style={{ top: "18%", left: "5%", right: "10%", bottom: "22%" }}
           >
-            <p
-              className="font-semibold leading-snug text-gray-800"
-              style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "0.5s" }}
-            >
-              {c0}
-            </p>
-            <p
-              className="font-semibold leading-snug text-gray-800"
-              style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "2.0s" }}
-            >
-              {c1}
-            </p>
-            <p
-              className="font-semibold leading-snug text-gray-800"
-              style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "3.5s" }}
-            >
-              {c2}
-            </p>
+            {isFinalMessage ? (
+              <p
+                key="final"
+                className="font-semibold leading-snug text-gray-800"
+                style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.6s ease forwards" }}
+              >
+                {finalMessage}
+              </p>
+            ) : (
+              <>
+                <p
+                  className="font-semibold leading-snug text-gray-800"
+                  style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "0.5s" }}
+                >
+                  {c0}
+                </p>
+                <p
+                  className="font-semibold leading-snug text-gray-800"
+                  style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "2.0s" }}
+                >
+                  {c1}
+                </p>
+                <p
+                  className="font-semibold leading-snug text-gray-800"
+                  style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "3.5s" }}
+                >
+                  {c2}
+                </p>
+              </>
+            )}
           </div>
         </div>
 
