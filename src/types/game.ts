@@ -5,6 +5,7 @@ export interface Ingredient {
   id: string;
   name: string;
   emoji: string;
+  image: string;
   type: IngredientType;
 }
 
@@ -13,6 +14,7 @@ export interface Sauce {
   id: string;
   name: string;
   emoji: string;
+  image: string;
 }
 
 // ─── 맵기 단계 ────────────────────────────────────────────────────────────────

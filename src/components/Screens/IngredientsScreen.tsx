@@ -11,6 +11,16 @@ interface IngredientsScreenProps {
   onNext: () => void;
 }
 
+// index 기반 황금각 나선으로 그릇 안에 재료 분산 배치
+function getIngredientOffset(i: number) {
+  const angle = (i * 137.5 * Math.PI) / 180;
+  const radius = 18 + (i % 3) * 14;
+  return {
+    x: Math.round(Math.cos(angle) * radius),
+    y: Math.round(Math.sin(angle) * radius * 0.5),
+  };
+}
+
 export default function IngredientsScreen({
   selectedIngredients,
   bowlPop,
@@ -47,74 +57,36 @@ export default function IngredientsScreen({
             style={{ background: "linear-gradient(90deg, #92400E, #D97706, #92400E)" }} />
         </div>
 
-        {/* 중앙 마라탕 그릇 */}
+        {/* 중앙 마라탕 그릇 (PNG 이미지 + 재료 오버레이) */}
         <div className={`transition-transform duration-200 ${bowlPop ? "scale-105" : "scale-100"}`}>
           <div className="relative" style={{ width: "260px", height: "220px" }}>
-
-            {/* 그릇 테두리 장식 띠 (상단 림) */}
-            <div
-              className="absolute left-0 right-0 rounded-full shadow-lg z-10"
-              style={{
-                top: "12px",
-                height: "44px",
-                background: "linear-gradient(180deg, #C2410C 0%, #B45309 40%, #92400E 100%)",
-                border: "3px solid #7C2D12",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.15)",
-              }}
+            <img
+              src="/img/bowl_big.png"
+              alt="그릇"
+              className="w-full h-full object-contain"
+              draggable={false}
             />
-            {/* 림 안쪽 하이라이트 */}
-            <div
-              className="absolute left-4 right-4 rounded-full z-20"
-              style={{
-                top: "16px",
-                height: "14px",
-                background: "linear-gradient(180deg, rgba(255,200,150,0.4) 0%, transparent 100%)",
-              }}
-            />
-
-            {/* 그릇 몸통 */}
-            <div
-              className="absolute left-0 right-0 overflow-hidden z-0"
-              style={{
-                top: "32px",
-                bottom: "0",
-                borderRadius: "0 0 50% 50%",
-                background: "linear-gradient(180deg, #C2410C 0%, #9A3412 40%, #7C2D12 100%)",
-                border: "3px solid #7C2D12",
-                borderTop: "none",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.5), inset -8px 0 20px rgba(0,0,0,0.2)",
-              }}
-            >
-              <div className="absolute right-6 top-8 text-lg opacity-30 rotate-12">🌶️</div>
-              <div className="absolute right-12 top-16 text-sm opacity-20 -rotate-6">🌶️</div>
-
-              {/* 국물 */}
-              <div
-                className="absolute left-0 right-0 bottom-0"
-                style={{
-                  height: "75%",
-                  background: "linear-gradient(180deg, #B91C1C 0%, #7F1D1D 100%)",
-                  borderRadius: "0 0 50% 50%",
-                  opacity: 0.95,
-                }}
-              />
-
-              {/* 재료 이모지 */}
-              <div
-                className="absolute inset-0 flex flex-wrap items-center justify-center gap-1 px-8"
-                style={{ paddingTop: "45%" }}
-              >
-                {selectedIngredients.map((ing, i) => (
-                  <span
-                    key={ing.id}
-                    className="leading-none drop-shadow"
-                    style={{ fontSize: "22px", transform: `rotate(${(i * 43) % 360}deg)` }}
-                  >
-                    {ing.emoji}
-                  </span>
-                ))}
-              </div>
-            </div>
+            {/* 선택된 재료 이미지 — 그릇 중앙에 겹쳐서 렌더링 */}
+            {selectedIngredients.map((ing, i) => {
+              const { x, y } = getIngredientOffset(i);
+              return (
+                <img
+                  key={ing.id}
+                  src={ing.image}
+                  alt={ing.name}
+                  draggable={false}
+                  className="absolute object-contain drop-shadow-md"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    left: `calc(50% + ${x}px - 20px)`,
+                    top: `calc(58% + ${y}px - 20px)`,
+                    zIndex: 10 + i,
+                    transform: `rotate(${(i * 43) % 60 - 30}deg)`,
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -155,7 +127,7 @@ export default function IngredientsScreen({
         </span>
       </div>
 
-      {/* 하단 재료 버튼 2행 */}
+      {/* 하단 재료 버튼 2행 — 이모지 제거, 이름만 표시 */}
       <div
         className="px-2 py-3 border-t-4"
         style={{
@@ -171,12 +143,14 @@ export default function IngredientsScreen({
                 <button
                   key={item.id}
                   onClick={() => onToggle(item)}
-                  className="flex flex-col items-center justify-center gap-0.5 rounded-lg font-bold
+                  className="flex items-center justify-center rounded-lg font-bold
                              transition-all duration-75 active:scale-90 flex-1"
                   style={{
                     minWidth: 0,
-                    paddingTop: "6px",
-                    paddingBottom: "6px",
+                    paddingTop: "8px",
+                    paddingBottom: "8px",
+                    paddingLeft: "4px",
+                    paddingRight: "4px",
                     fontSize: "10px",
                     border: "2px solid #CA8A04",
                     borderBottom: "4px solid #A16207",
@@ -189,8 +163,7 @@ export default function IngredientsScreen({
                       : "0 2px 4px rgba(0,0,0,0.3)",
                   }}
                 >
-                  <span style={{ fontSize: "18px", lineHeight: 1 }}>{item.emoji}</span>
-                  <span style={{ fontSize: "9px", lineHeight: 1.2, textAlign: "center" }}>{item.name}</span>
+                  <span style={{ fontSize: "10px", lineHeight: 1.2, textAlign: "center" }}>{item.name}</span>
                 </button>
               );
             })}

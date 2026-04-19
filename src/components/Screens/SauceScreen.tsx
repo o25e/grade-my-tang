@@ -10,6 +10,15 @@ interface SauceScreenProps {
 const row1 = SAUCES.slice(0, 3);
 const row2 = SAUCES.slice(3, 6);
 
+function getSauceOffset(i: number) {
+  const angle = (i * 137.5 * Math.PI) / 180;
+  const radius = 18 + (i % 3) * 14;
+  return {
+    x: Math.round(Math.cos(angle) * radius),
+    y: Math.round(Math.sin(angle) * radius * 0.5),
+  };
+}
+
 export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit }: SauceScreenProps) {
   const canSubmit = selectedSauces.length >= 2;
 
@@ -47,78 +56,46 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
           />
         </div>
 
-        {/* 중앙 그릇 — 선택된 소스 시각화 */}
+        {/* 중앙 그릇 (PNG) + 선택된 소스 오버레이 */}
         <div className="transition-transform duration-200">
           <div className="relative" style={{ width: "260px", height: "220px" }}>
-
-            {/* 상단 림 */}
-            <div
-              className="absolute left-0 right-0 rounded-full shadow-lg z-10"
-              style={{
-                top: "12px",
-                height: "44px",
-                background: "linear-gradient(180deg, #C2410C 0%, #B45309 40%, #92400E 100%)",
-                border: "3px solid #7C2D12",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.15)",
-              }}
+            <img
+              src="/img/bowl_sauce.png"
+              alt="소스 그릇"
+              className="w-full h-full object-contain"
+              draggable={false}
             />
-            {/* 림 하이라이트 */}
-            <div
-              className="absolute left-4 right-4 rounded-full z-20"
-              style={{
-                top: "16px",
-                height: "14px",
-                background: "linear-gradient(180deg, rgba(255,200,150,0.4) 0%, transparent 100%)",
-              }}
-            />
-
-            {/* 그릇 몸통 */}
-            <div
-              className="absolute left-0 right-0 overflow-hidden z-0"
-              style={{
-                top: "32px",
-                bottom: "0",
-                borderRadius: "0 0 50% 50%",
-                background: "linear-gradient(180deg, #C2410C 0%, #9A3412 40%, #7C2D12 100%)",
-                border: "3px solid #7C2D12",
-                borderTop: "none",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.5), inset -8px 0 20px rgba(0,0,0,0.2)",
-              }}
-            >
-              {/* 국물 */}
-              <div
-                className="absolute left-0 right-0 bottom-0"
-                style={{
-                  height: "75%",
-                  background: "linear-gradient(180deg, #B91C1C 0%, #7F1D1D 100%)",
-                  borderRadius: "0 0 50% 50%",
-                  opacity: 0.95,
-                }}
-              />
-
-              {/* 선택된 소스 이모지 */}
-              <div
-                className="absolute inset-0 flex flex-wrap items-center justify-center gap-1 px-8"
-                style={{ paddingTop: "45%" }}
+            {selectedSauces.length === 0 ? (
+              <span
+                className="absolute text-3xl"
+                style={{ left: "50%", top: "58%", transform: "translate(-50%, -50%)", opacity: 0.4 }}
               >
-                {selectedSauces.length === 0 ? (
-                  <span className="text-white/40 text-3xl">🥢</span>
-                ) : (
-                  selectedSauces.map((id, i) => {
-                    const sauce = SAUCES.find((s) => s.id === id);
-                    return sauce ? (
-                      <span
-                        key={id}
-                        className="leading-none drop-shadow"
-                        style={{ fontSize: "22px", transform: `rotate(${(i * 43) % 360}deg)` }}
-                      >
-                        {sauce.emoji}
-                      </span>
-                    ) : null;
-                  })
-                )}
-              </div>
-            </div>
+                🥢
+              </span>
+            ) : (
+              selectedSauces.map((id, i) => {
+                const sauce = SAUCES.find((s) => s.id === id);
+                if (!sauce) return null;
+                const { x, y } = getSauceOffset(i);
+                return (
+                  <img
+                    key={id}
+                    src={sauce.image}
+                    alt={sauce.name}
+                    draggable={false}
+                    className="absolute object-contain drop-shadow-md"
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      left: `calc(50% + ${x}px - 20px)`,
+                      top: `calc(58% + ${y}px - 20px)`,
+                      zIndex: 10 + i,
+                      transform: `rotate(${(i * 43) % 60 - 30}deg)`,
+                    }}
+                  />
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -177,7 +154,7 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
         </span>
       </div>
 
-      {/* 하단 소스 버튼 2행 */}
+      {/* 하단 소스 버튼 2행 — 이모지 제거, 이름만 표시 */}
       <div
         className="px-2 py-3 border-t-4"
         style={{
@@ -193,12 +170,14 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
                 <button
                   key={sauce.id}
                   onClick={() => onToggle(sauce.id)}
-                  className="flex flex-col items-center justify-center gap-0.5 rounded-lg font-bold
+                  className="flex items-center justify-center rounded-lg font-bold
                              transition-all duration-75 active:scale-90 flex-1"
                   style={{
                     minWidth: 0,
-                    paddingTop: "8px",
-                    paddingBottom: "8px",
+                    paddingTop: "10px",
+                    paddingBottom: "10px",
+                    paddingLeft: "4px",
+                    paddingRight: "4px",
                     border: "2px solid #CA8A04",
                     borderBottom: "4px solid #A16207",
                     background: isSelected
@@ -210,8 +189,7 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
                       : "0 2px 4px rgba(0,0,0,0.3)",
                   }}
                 >
-                  <span style={{ fontSize: "24px", lineHeight: 1 }}>{sauce.emoji}</span>
-                  <span style={{ fontSize: "10px", lineHeight: 1.3, textAlign: "center" }}>{sauce.name}</span>
+                  <span style={{ fontSize: "11px", lineHeight: 1.3, textAlign: "center" }}>{sauce.name}</span>
                 </button>
               );
             })}
