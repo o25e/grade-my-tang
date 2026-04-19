@@ -167,20 +167,20 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
                 <button
                   key={sauce.id}
                   onClick={() => onToggle(sauce.id)}
-                  className="flex items-center justify-center rounded-lg font-bold
-                             transition-all duration-75 active:scale-90 flex-1"
+                  className={`flex items-center justify-center rounded-lg font-bold
+                             transition-all duration-150 flex-1 border-2 border-b-4
+                             hover:translate-y-0.5 hover:border-b-2
+                             active:translate-y-1 active:border-b-0
+                             ${isSelected
+                               ? "bg-orange-400 text-white border-orange-600"
+                               : "bg-yellow-200 text-amber-900 border-yellow-600 hover:bg-yellow-100 active:bg-orange-200"
+                             }`}
                   style={{
                     minWidth: 0,
                     paddingTop: "14px",
                     paddingBottom: "14px",
                     paddingLeft: "4px",
                     paddingRight: "4px",
-                    border: "2px solid #CA8A04",
-                    borderBottom: "4px solid #A16207",
-                    background: isSelected
-                      ? "linear-gradient(180deg, #FDE047 0%, #EAB308 100%)"
-                      : "linear-gradient(180deg, #FEF08A 0%, #FDE047 100%)",
-                    color: "#713F12",
                     boxShadow: isSelected
                       ? "inset 0 1px 2px rgba(255,255,255,0.6)"
                       : "0 2px 4px rgba(0,0,0,0.3)",
