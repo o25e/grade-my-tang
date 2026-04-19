@@ -18,6 +18,11 @@ export default function TastingScreen({ ending, selectedSauces, onDone }: Tastin
     : isSauceGood ? "/img/game_resultb3.png" : "/img/game_resultb4.png";
 
   useEffect(() => {
+    const img = new Image();
+    img.src = "/img/screen/game_result.png";
+  }, []);
+
+  useEffect(() => {
     const bgm = new Audio("/sounds/tension_bgm.mp3");
     bgm.loop = true;
     bgm.volume = 1.0;

@@ -1,5 +1,14 @@
+import { useEffect } from "react";
 import { useGameState } from "./hooks/useGameState";
 import { useBGM } from "./hooks/useBGM";
+
+const PRELOAD_IMAGES = [
+  "/img/screen/game_result.png",
+  "/img/game_resultb1.png",
+  "/img/game_resultb2.png",
+  "/img/game_resultb3.png",
+  "/img/game_resultb4.png",
+];
 import TitleScreen        from "./components/Screens/TitleScreen";
 import InstructionsScreen from "./components/Screens/InstructionsScreen";
 import ManualScreen       from "./components/Screens/ManualScreen";
@@ -10,6 +19,14 @@ import TastingScreen      from "./components/Screens/TastingScreen";
 import ResultScreen       from "./components/Result/ResultScreen";
 
 export default function App() {
+  useEffect(() => {
+    PRELOAD_IMAGES.forEach(src => {
+      const img = new Image();
+      img.src = src;
+      img.decode().catch(() => {});
+    });
+  }, []);
+
   const {
     screen, setScreen,
     selectedIngredients,

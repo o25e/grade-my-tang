@@ -27,6 +27,11 @@ export default function ResultScreen({
 }: ResultScreenProps) {
   const { playPop, playBoom, playText } = useSound();
   const [restartHovered, setRestartHovered] = useState(false);
+  const [bgReady, setBgReady] = useState(() => {
+    const img = new Image();
+    img.src = "/img/screen/game_result.png";
+    return img.complete;
+  });
 
   useEffect(() => {
     const ids = [500, 2000, 3500].map(delay => setTimeout(playText, delay));
@@ -48,7 +53,7 @@ export default function ResultScreen({
   const [c0, c1, c2] = ending.comments;
 
   return (
-    <div className="relative w-full h-full select-none overflow-hidden">
+    <div className="relative w-full h-full select-none overflow-hidden" style={{ visibility: bgReady ? "visible" : "hidden" }}>
 
       {/* 애니메이션 keyframes */}
       <style>{`
@@ -68,6 +73,7 @@ export default function ResultScreen({
         src="/img/screen/game_result.png"
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
+        onLoad={() => setBgReady(true)}
         style={{ zIndex: 0 }}
       />
 
