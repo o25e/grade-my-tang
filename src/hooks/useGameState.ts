@@ -42,7 +42,7 @@ export function useGameState(): GameState {
 
   const submitResult = () => {
     setEnding(getEnding(selectedIngredients, spiceLevel, selectedSauces));
-    setScreen("result");
+    setScreen("tasting");
   };
 
   const reset = () => {

@@ -50,4 +50,5 @@ export type GameScreen =
   | "ingredients"
   | "spice"
   | "sauce"
+  | "tasting"
   | "result";

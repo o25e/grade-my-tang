@@ -6,6 +6,7 @@ import ManualScreen       from "./components/Screens/ManualScreen";
 import IngredientsScreen  from "./components/Screens/IngredientsScreen";
 import SpiceScreen        from "./components/Screens/SpiceScreen";
 import SauceScreen        from "./components/Screens/SauceScreen";
+import TastingScreen      from "./components/Screens/TastingScreen";
 import ResultScreen       from "./components/Result/ResultScreen";
 
 export default function App() {
@@ -77,6 +78,16 @@ export default function App() {
         onToggle={toggleSauce}
         onBack={() => setScreen("spice")}
         onSubmit={submitResult}
+      />
+    );
+  }
+
+  if (screen === "tasting" && ending) {
+    return (
+      <TastingScreen
+        ending={ending}
+        selectedSauces={selectedSauces}
+        onDone={() => setScreen("result")}
       />
     );
   }

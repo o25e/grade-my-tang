@@ -124,7 +124,7 @@ export default function ResultScreen({
           />
           <div
             className="absolute flex flex-col justify-center gap-2 px-6"
-            style={{ top: "18%", left: "8%", right: "10%", bottom: "22%" }}
+            style={{ top: "18%", left: "5%", right: "10%", bottom: "22%" }}
           >
             <p
               className="font-semibold leading-snug text-gray-800"
