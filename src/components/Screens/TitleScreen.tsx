@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSound } from "../../hooks/useSound";
 
 interface TitleScreenProps {
   onStart: () => void;
@@ -6,6 +7,7 @@ interface TitleScreenProps {
 }
 
 export default function TitleScreen({ onStart, onInstructions }: TitleScreenProps) {
+  const { playPop } = useSound();
   const [startHover, setStartHover] = useState(false);
   const [manualHover, setManualHover] = useState(false);
 
@@ -20,7 +22,7 @@ export default function TitleScreen({ onStart, onInstructions }: TitleScreenProp
       {/* buttons */}
       <div className="absolute z-10 flex flex-col items-center" style={{ right: "2%", bottom: "1%", gap: "0px" }}>
         <button
-          onClick={onStart}
+          onClick={() => { playPop(); onStart(); }}
           onMouseEnter={() => setStartHover(true)}
           onMouseLeave={() => setStartHover(false)}
           className="active:scale-95 transition-transform duration-75 bg-transparent border-none p-0">
@@ -32,7 +34,7 @@ export default function TitleScreen({ onStart, onInstructions }: TitleScreenProp
           />
         </button>
         <button
-          onClick={onInstructions}
+          onClick={() => { playPop(); onInstructions(); }}
           onMouseEnter={() => setManualHover(true)}
           onMouseLeave={() => setManualHover(false)}
           className="active:scale-95 transition-transform duration-75 bg-transparent border-none p-0">

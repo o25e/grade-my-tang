@@ -13,8 +13,9 @@ function playSound(src: string, volume: number) {
 export function useSound(volume = DEFAULT_VOLUME) {
   const playHover      = useCallback(() => playSound("/sounds/hover.mp3",      volume), [volume]);
   const playClick      = useCallback(() => playSound("/sounds/click.mp3",      volume), [volume]);
-  const playTransition = useCallback(() => playSound("/sounds/transition.mp3", volume), [volume]);
+  const playTransition = useCallback(() => playSound("/sounds/transition.mp3", Math.min(volume * 2, 1)), [volume]);
   const playWarning    = useCallback(() => playSound("/sounds/warning.mp3",    volume), [volume]);
+  const playPop        = useCallback(() => playSound("/sounds/pop.mp3",        volume), [volume]);
 
-  return { playHover, playClick, playTransition, playWarning };
+  return { playHover, playClick, playTransition, playWarning, playPop };
 }

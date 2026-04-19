@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Ending, Ingredient } from "../../types/game";
+import { useSound } from "../../hooks/useSound";
 
 interface ResultScreenProps {
   ending: Ending;
@@ -24,6 +25,7 @@ export default function ResultScreen({
   selectedSauces,
   onReset,
 }: ResultScreenProps) {
+  const { playPop } = useSound();
   const [restartHovered, setRestartHovered] = useState(false);
   const isMalatangGood = ending.score > 50;
   const isSauceGood =
@@ -168,7 +170,7 @@ export default function ResultScreen({
       {/* 다시 도전 버튼 — 위치: bottom/right, 크기: width로 조절 */}
       <div className="absolute" style={{ zIndex: 40, bottom: 5, right: 11 }}>
         <button
-          onClick={onReset}
+          onClick={() => { playPop(); onReset(); }}
           onMouseEnter={() => setRestartHovered(true)}
           onMouseLeave={() => setRestartHovered(false)}
           className="bg-transparent border-none p-0 cursor-pointer transition-all duration-75 active:scale-95 active:translate-y-1"

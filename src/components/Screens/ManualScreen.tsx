@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useSound } from "../../hooks/useSound";
 
 interface ManualScreenProps {
   onStart: () => void;
 }
 
 export default function ManualScreen({ onStart }: ManualScreenProps) {
+  const { playPop } = useSound();
   const [hover, setHover] = useState(false);
 
   return (
@@ -17,7 +19,7 @@ export default function ManualScreen({ onStart }: ManualScreenProps) {
       />
       <div className="absolute bottom-2 right-2 flex justify-end z-10">
         <button
-          onClick={onStart}
+          onClick={() => { playPop(); onStart(); }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           className="active:scale-95 transition-transform duration-75 bg-transparent border-none p-0">
