@@ -1,5 +1,20 @@
 import { Ingredient, Ending } from "../types/game";
 
+const PROFESSOR_IMAGES = {
+  bad:      "/img/professor_bad.png",
+  soso:     "/img/professor_soso.png",
+  smile:    "/img/professor_smile.png",
+  happy:    "/img/professor_happy.png",
+  surprise: "/img/professor_suprise.png",
+} as const;
+
+export function getProfessorImage(score: number): string {
+  if (score <= 20) return PROFESSOR_IMAGES.bad;
+  if (score <= 50) return PROFESSOR_IMAGES.soso;
+  if (score <= 80) return PROFESSOR_IMAGES.smile;
+  return PROFESSOR_IMAGES.happy;
+}
+
 export function getEnding(
   ingredients: Ingredient[],
   spiceLevel: number | null,
@@ -11,11 +26,24 @@ export function getEnding(
   const noodles     = ingredients.filter((i) => i.type === "noodle");
   const hasCilantro = sauces.includes("cilantro");
 
+  // 히든 엔딩: 두 꽝 재료 모두 선택
+  const trapIds = ingredients.filter((i) => i.type === "trap").map((i) => i.id);
+  if (trapIds.includes("mintchoco") && trapIds.includes("mushroom")) return {
+    grade: "??", title: "히든 엔딩", emotion: "😱",
+    comment:
+      "이건... 도대체 무슨 생각으로 만든 거야?! 초콜릿이랑 팽이버섯을 둘 다?! 이건 마라탕이 아니라 실험체야. 학점은... 말을 잃었네.",
+    gradeColor: "text-pink-600", gradeBorder: "border-pink-400", bg: "from-pink-200 to-pink-100",
+    score: 0,
+    professorImage: PROFESSOR_IMAGES.surprise,
+  };
+
   if (hasTrap) return {
     grade: "F", title: "퇴학 엔딩", emotion: "😡",
     comment:
       "이게 마라탕이야, 장난이야?! 초콜릿은 디저트고 팽이버섯은… 잠깐, 이거 먹으면 죽어? 자네 퇴학 처리야. 다시는 내 강의실 오지 말게.",
     gradeColor: "text-red-600", gradeBorder: "border-red-400", bg: "from-red-200 to-red-100",
+    score: 0,
+    professorImage: PROFESSOR_IMAGES.bad,
   };
 
   if (spiceLevel === 4 && hasCilantro) return {
@@ -23,6 +51,8 @@ export function getEnding(
     comment:
       "자네… 이게 사람 먹으라고 만든 건가? 4단계 맵기에 고수까지? 이 마라탕으로 강의실 해충 퇴치 가능하겠군. 학점은 D야.",
     gradeColor: "text-orange-600", gradeBorder: "border-orange-400", bg: "from-orange-200 to-orange-100",
+    score: 15,
+    professorImage: PROFESSOR_IMAGES.bad,
   };
 
   if (meats.length >= 3 && veggies.length === 0 && noodles.length === 0) return {
@@ -30,6 +60,8 @@ export function getEnding(
     comment:
       "채소는 장식이라고 생각하나? 고기만 세 종류… 자네 마라탕이 아니라 고기탕을 만들었군. 그래도 맛은 있겠어. B 주지.",
     gradeColor: "text-yellow-600", gradeBorder: "border-yellow-400", bg: "from-yellow-200 to-yellow-100",
+    score: 55,
+    professorImage: PROFESSOR_IMAGES.smile,
   };
 
   if (veggies.length >= 2 && meats.length === 0 && noodles.length === 0) return {
@@ -37,6 +69,8 @@ export function getEnding(
     comment:
       "마라탕에 웬 샐러드 콘셉트야? 건강은 좋지만… 이건 그냥 채소 수프 아닌가? 마라의 정수가 없어. C 주겠네.",
     gradeColor: "text-green-600", gradeBorder: "border-green-400", bg: "from-green-200 to-green-100",
+    score: 35,
+    professorImage: PROFESSOR_IMAGES.soso,
   };
 
   if (noodles.length >= 2 && meats.length === 0 && veggies.length === 0) return {
@@ -44,6 +78,8 @@ export function getEnding(
     comment:
       "면이 좋은 건 알겠는데… 이건 마라탕인가 탄수화물 집합소인가? 나름 독창적이야. B+ 주지.",
     gradeColor: "text-blue-600", gradeBorder: "border-blue-400", bg: "from-blue-200 to-blue-100",
+    score: 65,
+    professorImage: PROFESSOR_IMAGES.smile,
   };
 
   if (meats.length >= 1 && veggies.length >= 1 && noodles.length >= 1) return {
@@ -51,6 +87,8 @@ export function getEnding(
     comment:
       "완벽해! 고기의 풍미, 채소의 신선함, 면의 쫄깃함이 조화롭게 어우러졌군! 자네야말로 진정한 마라탕 고수야! A+ 주겠네!",
     gradeColor: "text-purple-600", gradeBorder: "border-purple-400", bg: "from-purple-200 to-purple-100",
+    score: 95,
+    professorImage: PROFESSOR_IMAGES.happy,
   };
 
   return {
@@ -58,5 +96,7 @@ export function getEnding(
     comment:
       "흠… 나쁘지 않군. 그냥 평범한 마라탕이야. 좀 더 균형을 맞춰보게. B- 주겠네.",
     gradeColor: "text-gray-600", gradeBorder: "border-gray-400", bg: "from-gray-200 to-gray-100",
+    score: 40,
+    professorImage: PROFESSOR_IMAGES.soso,
   };
 }

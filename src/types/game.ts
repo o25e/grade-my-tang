@@ -37,6 +37,8 @@ export interface Ending {
   gradeColor: string;
   gradeBorder: string;
   bg: string;
+  score: number;
+  professorImage: string;
 }
 
 // ─── 화면 라우팅 ──────────────────────────────────────────────────────────────
