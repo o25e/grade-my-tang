@@ -23,7 +23,7 @@ export const OTHERS = [
 ];
 
 export const TRAPS = [
-  { id: "mintchoco", name: "초콜릿", emoji: "🍫", type: "trap" },
+  { id: "choco", name: "초콜릿", emoji: "🍫", type: "trap" },
   { id: "mushroom",  name: "팽이버섯", emoji: "🍄", type: "trap" },
 ];
 

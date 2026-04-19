@@ -8,6 +8,16 @@ interface ResultScreenProps {
   onReset: () => void;
 }
 
+const GRADE_COLORS: Record<string, string> = {
+  "A+": "#EAB308",
+  "A":  "#16A34A",
+  "B+": "#2563EB",
+  "B":  "#0D9488",
+  "C":  "#F97316",
+  "D":  "#EF4444",
+  "F":  "#B91C1C",
+};
+
 export default function ResultScreen({
   ending,
   selectedSauces,
@@ -23,9 +33,25 @@ export default function ResultScreen({
 
   const isBad      = ending.professorImage.includes("bad");
   const isSurprise = ending.professorImage.includes("suprise");
+  const gradeColor = GRADE_COLORS[ending.grade] ?? "#6B7280";
+
+  const [c0, c1, c2] = ending.comments;
 
   return (
     <div className="relative w-full h-full select-none overflow-hidden">
+
+      {/* 애니메이션 keyframes */}
+      <style>{`
+        @keyframes fadeSlideIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes gradePop {
+          0%   { opacity: 0; transform: scale(0.4) rotate(-8deg); }
+          65%  { transform: scale(1.15) rotate(3deg); }
+          100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+      `}</style>
 
       {/* Layer 1: 배경 */}
       <img
@@ -35,7 +61,7 @@ export default function ResultScreen({
         style={{ zIndex: 0 }}
       />
 
-      {/* Layer 3: 교수님 (우측 상단, 마라탕 이미지 뒤) */}
+      {/* Layer 3: 교수님 */}
       <div className="absolute top-6 right-36" style={{ zIndex: 10 }}>
         {isBad && (
           <div
@@ -76,17 +102,65 @@ export default function ResultScreen({
           src={resultImage}
           alt="마라탕 결과"
           className="w-full object-contain"
-          style={{ filter: "drop-shadow(0 8px 28px rgba(0,0,0,0.5))", transform: "scale(1.2) translateY(19px)", transformOrigin: "center" }}
+          style={{
+            filter: "drop-shadow(0 8px 28px rgba(0,0,0,0.5))",
+            transform: "scale(1.2) translateY(19px)",
+            transformOrigin: "center",
+          }}
         />
       </div>
 
-      {/* Layer 4: 말풍선 (좌측 상단) */}
+      {/* Layer 4: 말풍선 — 3줄 멘트 (타이틀 제거) */}
       <div className="absolute top-8 left-16" style={{ zIndex: 20 }}>
-        <img
-          src="/img/chat.png"
-          alt="말풍선"
-          style={{ width: "370px", objectFit: "contain" }}
-        />
+        <div className="relative">
+          <img
+            src="/img/chat.png"
+            alt="말풍선"
+            style={{ width: "370px", objectFit: "contain" }}
+          />
+          <div
+            className="absolute flex flex-col justify-center gap-2 px-6"
+            style={{ top: "12%", left: "6%", right: "10%", bottom: "22%" }}
+          >
+            <p
+              className="text-xs font-semibold leading-snug text-gray-800"
+              style={{ opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "0.2s" }}
+            >
+              {c0}
+            </p>
+            <p
+              className="text-xs font-semibold leading-snug text-gray-800"
+              style={{ opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "1.0s" }}
+            >
+              {c1}
+            </p>
+            <p
+              className="text-xs font-semibold leading-snug text-gray-800"
+              style={{ opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "1.8s" }}
+            >
+              {c2}
+            </p>
+          </div>
+        </div>
+
+        {/* 최종 성적 — 말풍선 아래 딱 등장 */}
+        <div
+          className="mt-2 flex items-center gap-3 pl-2"
+          style={{ opacity: 0, animation: "gradePop 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards", animationDelay: "2.8s" }}
+        >
+          <span
+            className="font-black leading-none"
+            style={{ fontSize: "72px", color: gradeColor, textShadow: "0 4px 12px rgba(0,0,0,0.3)" }}
+          >
+            {ending.grade}
+          </span>
+          <span
+            className="font-black text-xl"
+            style={{ color: gradeColor, opacity: 0.85 }}
+          >
+            {ending.score}점
+          </span>
+        </div>
       </div>
 
       {/* 다시 도전 버튼 */}
@@ -101,7 +175,7 @@ export default function ResultScreen({
             boxShadow: "0 4px 0 #7C2D12",
           }}
         >
-          🔄 다시 도전!
+          다시 도전
         </button>
       </div>
     </div>

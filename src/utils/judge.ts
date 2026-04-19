@@ -20,83 +20,155 @@ export function getEnding(
   spiceLevel: number | null,
   sauces: string[],
 ): Ending {
-  const hasTrap     = ingredients.some((i) => i.type === "trap");
+  // ── 즉시 판정: 민트초코 재료 또는 소스 ──────────────────────────
+  if (ingredients.some((i) => i.id === "choco") || sauces.includes("mintchoco")) {
+    return {
+      grade: "F",
+      title: "최악의 선택 엔딩",
+      emotion: "🤮",
+      comment: "마라탕에 초콜릿이라니 제정신인가? 재료 선택이 엉망이군!",
+      comments: [
+        "마라탕에 초콜릿이라니 제정신인가?",
+        "재료 선택이 엉망이군!",
+        "이런 걸 마라탕이라고 가져오다니...",
+      ],
+      gradeColor: "text-red-700",
+      gradeBorder: "border-red-600",
+      bg: "from-red-300 to-red-100",
+      score: 0,
+      professorImage: PROFESSOR_IMAGES.bad,
+    };
+  }
+
+  // ── 점수 계산 ────────────────────────────────────────────────────
+  let score = 50;
+
   const meats       = ingredients.filter((i) => i.type === "meat");
   const veggies     = ingredients.filter((i) => i.type === "veggie");
-  const noodles     = ingredients.filter((i) => i.type === "noodle");
-  const hasCilantro = sauces.includes("cilantro");
+  const hasBokchoy  = veggies.some((v) => v.id === "bokchoy");
+  const hasMushroom = ingredients.some((i) => i.id === "mushroom");
+  const hasChiliOil   = sauces.includes("chilioil");
+  const hasPeanut     = sauces.includes("peanut");
+  const hasGreenOnion = sauces.includes("greenonion");
+  const noVeggieAtAll = veggies.length === 0 && !hasMushroom;
 
-  // 히든 엔딩: 두 꽝 재료 모두 선택
-  const trapIds = ingredients.filter((i) => i.type === "trap").map((i) => i.id);
-  if (trapIds.includes("mintchoco") && trapIds.includes("mushroom")) return {
-    grade: "??", title: "히든 엔딩", emotion: "😱",
-    comment:
-      "이건... 도대체 무슨 생각으로 만든 거야?! 초콜릿이랑 팽이버섯을 둘 다?! 이건 마라탕이 아니라 실험체야. 학점은... 말을 잃었네.",
-    gradeColor: "text-pink-600", gradeBorder: "border-pink-400", bg: "from-pink-200 to-pink-100",
-    score: 0,
-    professorImage: PROFESSOR_IMAGES.surprise,
-  };
+  // 육류
+  if (meats.length >= 3)       score += 25;
+  else if (meats.length === 2) score += 15;
+  else if (meats.length === 1) score += 5;
+  else                         score -= 10;
 
-  if (hasTrap) return {
-    grade: "F", title: "퇴학 엔딩", emotion: "😡",
-    comment:
-      "이게 마라탕이야, 장난이야?! 초콜릿은 디저트고 팽이버섯은… 잠깐, 이거 먹으면 죽어? 자네 퇴학 처리야. 다시는 내 강의실 오지 말게.",
-    gradeColor: "text-red-600", gradeBorder: "border-red-400", bg: "from-red-200 to-red-100",
-    score: 0,
-    professorImage: PROFESSOR_IMAGES.bad,
-  };
+  // 채소
+  if (hasBokchoy && hasMushroom)                                 score -= 20;
+  else if ((hasBokchoy || hasMushroom) && meats.length === 0)    score -= 15;
+  else if ((hasBokchoy || hasMushroom) && meats.length >= 2)     score += 5;
+  else if (noVeggieAtAll && meats.length >= 2)                   score += 20;
 
-  if (spiceLevel === 4 && hasCilantro) return {
-    grade: "D", title: "인간 퇴치용 엔딩", emotion: "😰",
-    comment:
-      "자네… 이게 사람 먹으라고 만든 건가? 4단계 맵기에 고수까지? 이 마라탕으로 강의실 해충 퇴치 가능하겠군. 학점은 D야.",
-    gradeColor: "text-orange-600", gradeBorder: "border-orange-400", bg: "from-orange-200 to-orange-100",
-    score: 15,
-    professorImage: PROFESSOR_IMAGES.bad,
-  };
+  // 맵기
+  if      (spiceLevel === null || spiceLevel === 0) score -= 15;
+  else if (spiceLevel === 1)                        score -= 10;
+  else if (spiceLevel === 3)                        score += 20;
+  else if (spiceLevel === 4)                        score -= 15;
 
-  if (meats.length >= 3 && veggies.length === 0 && noodles.length === 0) return {
-    grade: "B", title: "육식 폭군 엔딩", emotion: "😑",
-    comment:
-      "채소는 장식이라고 생각하나? 고기만 세 종류… 자네 마라탕이 아니라 고기탕을 만들었군. 그래도 맛은 있겠어. B 주지.",
-    gradeColor: "text-yellow-600", gradeBorder: "border-yellow-400", bg: "from-yellow-200 to-yellow-100",
-    score: 55,
-    professorImage: PROFESSOR_IMAGES.smile,
-  };
+  // 소스
+  const isGoldenCombo = hasPeanut && hasChiliOil && hasGreenOnion;
+  if      (isGoldenCombo) score += 20;
+  else if (!hasChiliOil)  score -= 10;
+  else                    score += 5;
 
-  if (veggies.length >= 2 && meats.length === 0 && noodles.length === 0) return {
-    grade: "C", title: "건강식 집착 엔딩", emotion: "😑",
-    comment:
-      "마라탕에 웬 샐러드 콘셉트야? 건강은 좋지만… 이건 그냥 채소 수프 아닌가? 마라의 정수가 없어. C 주겠네.",
-    gradeColor: "text-green-600", gradeBorder: "border-green-400", bg: "from-green-200 to-green-100",
-    score: 35,
-    professorImage: PROFESSOR_IMAGES.soso,
-  };
+  score = Math.max(0, Math.min(100, score));
 
-  if (noodles.length >= 2 && meats.length === 0 && veggies.length === 0) return {
-    grade: "B+", title: "탄수화물 과몰입 엔딩", emotion: "😲",
-    comment:
-      "면이 좋은 건 알겠는데… 이건 마라탕인가 탄수화물 집합소인가? 나름 독창적이야. B+ 주지.",
-    gradeColor: "text-blue-600", gradeBorder: "border-blue-400", bg: "from-blue-200 to-blue-100",
-    score: 65,
-    professorImage: PROFESSOR_IMAGES.smile,
-  };
+  // ── 3개 멘트 생성 ────────────────────────────────────────────────
+  // 재료 멘트
+  let ingredientComment: string;
+  if (hasBokchoy && hasMushroom) {
+    ingredientComment = "청경채에 팽이버섯까지... 내 취향이 아니야.";
+  } else if ((hasBokchoy || hasMushroom) && meats.length === 0) {
+    ingredientComment = "재료 구성이 엉망이군!";
+  } else if ((hasBokchoy || hasMushroom) && meats.length >= 2) {
+    ingredientComment = "나쁘지 않아.";
+  } else if (noVeggieAtAll && meats.length >= 2) {
+    ingredientComment = "채소 없이 육류만? 완벽해!";
+  } else if (meats.length >= 3) {
+    ingredientComment = "고기가 아주 푸짐하구먼!";
+  } else if (meats.length === 2) {
+    ingredientComment = "고기 선택은 나쁘지 않아.";
+  } else if (meats.length === 1) {
+    ingredientComment = "고기가 좀 적지 않나?";
+  } else {
+    ingredientComment = "고기도 없이 마라탕이라 할 수 있겠나?";
+  }
 
-  if (meats.length >= 1 && veggies.length >= 1 && noodles.length >= 1) return {
-    grade: "A+", title: "마라 고수 엔딩", emotion: "😊",
-    comment:
-      "완벽해! 고기의 풍미, 채소의 신선함, 면의 쫄깃함이 조화롭게 어우러졌군! 자네야말로 진정한 마라탕 고수야! A+ 주겠네!",
-    gradeColor: "text-purple-600", gradeBorder: "border-purple-400", bg: "from-purple-200 to-purple-100",
-    score: 95,
-    professorImage: PROFESSOR_IMAGES.happy,
-  };
+  // 맵기 멘트
+  let spiceComment: string;
+  if      (spiceLevel === null || spiceLevel === 0) spiceComment = "너무 맹탕 아닌가?";
+  else if (spiceLevel === 1)                        spiceComment = "음... 밍밍하구먼.";
+  else if (spiceLevel === 2)                        spiceComment = "뭔가 부족해.";
+  else if (spiceLevel === 3)                        spiceComment = "칼칼하고 좋군! 딱이야!";
+  else                                              spiceComment = "너무 과해! 속 버리겠네.";
 
+  // 소스 멘트
+  let sauceComment: string;
+  if      (isGoldenCombo) sauceComment = "아주 맛있군! 딱 내 취향이야!";
+  else if (!hasChiliOil)  sauceComment = "뭔가 슴슴해.";
+  else                    sauceComment = "소스는 기본은 갖췄군.";
+
+  const comments: [string, string, string] = [ingredientComment, spiceComment, sauceComment];
+  const comment = comments.join(" ");
+
+  // ── 등급 판정 ────────────────────────────────────────────────────
+  if (score >= 90) {
+    return {
+      grade: "A+", title: "마라탕 장인 엔딩", emotion: "🏆",
+      comment, comments,
+      gradeColor: "text-yellow-500", gradeBorder: "border-yellow-400", bg: "from-yellow-200 to-yellow-50",
+      score, professorImage: PROFESSOR_IMAGES.happy,
+    };
+  }
+  if (score >= 75) {
+    return {
+      grade: "A", title: "훌륭한 마라탕 엔딩", emotion: "😊",
+      comment, comments,
+      gradeColor: "text-green-600", gradeBorder: "border-green-400", bg: "from-green-200 to-green-50",
+      score, professorImage: PROFESSOR_IMAGES.smile,
+    };
+  }
+  if (score >= 60) {
+    return {
+      grade: "B+", title: "꽤 괜찮은 엔딩", emotion: "🙂",
+      comment, comments,
+      gradeColor: "text-blue-600", gradeBorder: "border-blue-400", bg: "from-blue-200 to-blue-50",
+      score, professorImage: PROFESSOR_IMAGES.smile,
+    };
+  }
+  if (score >= 45) {
+    return {
+      grade: "B", title: "그럭저럭 엔딩", emotion: "😑",
+      comment, comments,
+      gradeColor: "text-teal-600", gradeBorder: "border-teal-400", bg: "from-teal-200 to-teal-50",
+      score, professorImage: PROFESSOR_IMAGES.soso,
+    };
+  }
+  if (score >= 30) {
+    return {
+      grade: "C", title: "보통 마라탕 엔딩", emotion: "😕",
+      comment, comments,
+      gradeColor: "text-orange-500", gradeBorder: "border-orange-400", bg: "from-orange-200 to-orange-50",
+      score, professorImage: PROFESSOR_IMAGES.soso,
+    };
+  }
+  if (score >= 15) {
+    return {
+      grade: "D", title: "아쉬운 엔딩", emotion: "😞",
+      comment, comments,
+      gradeColor: "text-red-500", gradeBorder: "border-red-400", bg: "from-red-200 to-red-50",
+      score, professorImage: PROFESSOR_IMAGES.bad,
+    };
+  }
   return {
-    grade: "B-", title: "평범한 마라탕 엔딩", emotion: "😑",
-    comment:
-      "흠… 나쁘지 않군. 그냥 평범한 마라탕이야. 좀 더 균형을 맞춰보게. B- 주겠네.",
-    gradeColor: "text-gray-600", gradeBorder: "border-gray-400", bg: "from-gray-200 to-gray-100",
-    score: 40,
-    professorImage: PROFESSOR_IMAGES.soso,
+    grade: "F", title: "낙제 엔딩", emotion: "😡",
+    comment, comments,
+    gradeColor: "text-red-700", gradeBorder: "border-red-600", bg: "from-red-300 to-red-100",
+    score, professorImage: PROFESSOR_IMAGES.bad,
   };
 }

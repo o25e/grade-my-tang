@@ -34,6 +34,7 @@ export interface Ending {
   title: string;
   emotion: string;
   comment: string;
+  comments: [string, string, string]; // [재료, 맵기, 소스]
   gradeColor: string;
   gradeBorder: string;
   bg: string;

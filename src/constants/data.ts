@@ -26,7 +26,7 @@ export const OTHERS: Ingredient[] = [
 ];
 
 export const TRAPS: Ingredient[] = [
-  { id: "mintchoco", name: "초콜릿", emoji: "🍫", image: "/img/chocolate.png",     type: "trap", position: { top: "20%", left: "36%", width: "66px" } },
+  { id: "choco", name: "초콜릿", emoji: "🍫", image: "/img/chocolate.png",     type: "trap", position: { top: "20%", left: "36%", width: "66px" } },
   { id: "mushroom",  name: "팽이버섯", emoji: "🍄", image: "/img/mushroom.png", type: "trap", position: { top: "31%", left: "60%", width: "72px" } },
 ];
 
