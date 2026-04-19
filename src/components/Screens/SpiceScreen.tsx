@@ -1,17 +1,30 @@
 import { useState, useEffect } from "react";
 import { SPICE_LEVELS } from "../../constants/data";
+import { Ingredient } from "../../types/game";
 import WarningModal from "./WarningModal";
+
+const OVERLAY_OPACITY: Record<number, number> = { 0: 0, 1: 0.25, 2: 0.40, 3: 0.65, 4: 0.80 };
+
+// 오버레이 영역 미세조정 — top/left/right/bottom 으로 그릇 안쪽에 맞게 수정하세요
+const OVERLAY_STYLE = {
+  top:    "7%",   // 위에서 얼마나 내려올지 (그릇 림 아래부터 시작)
+  left:   "16%",    // 왼쪽 여백
+  right:  "16%",    // 오른쪽 여백
+  bottom: "42%",    // 아래 여백
+};
 
 interface SpiceScreenProps {
   spiceLevel: number | null;
+  selectedIngredients: Ingredient[];
   onSelect: (level: number) => void;
   onBack: () => void;
   onNext: () => void;
 }
 
-export default function SpiceScreen({ spiceLevel, onSelect, onBack, onNext }: SpiceScreenProps) {
+export default function SpiceScreen({ spiceLevel, selectedIngredients, onSelect, onBack, onNext }: SpiceScreenProps) {
   const selected   = spiceLevel !== null ? SPICE_LEVELS[spiceLevel] : null;
   const canProceed = spiceLevel !== null;
+  const overlayOpacity = spiceLevel !== null ? OVERLAY_OPACITY[spiceLevel] : 0;
   const [showWarning, setShowWarning] = useState(false);
 
   useEffect(() => {
@@ -58,90 +71,47 @@ export default function SpiceScreen({ spiceLevel, onSelect, onBack, onNext }: Sp
           />
         </div>
 
-        {/* 중앙 그릇 — 맵기 시각화 */}
-        <div className="transition-transform duration-200">
-          <div className="relative" style={{ width: "260px", height: "220px" }}>
+        {/* 중앙 그릇 — bowl_big.png + 재료 + 빨간 오버레이 */}
+        <div className="transition-transform duration-200 mt-20">
+          <div className="relative" style={{ width: "min(460px, 75vw)", height: "min(420px, 37vh)" }}>
             <WarningModal message="맵기 단계를 선택해야 합니다!" visible={showWarning} />
 
-            {/* 상단 림 */}
-            <div
-              className="absolute left-0 right-0 rounded-full shadow-lg z-10"
-              style={{
-                top: "12px",
-                height: "44px",
-                background: "linear-gradient(180deg, #C2410C 0%, #B45309 40%, #92400E 100%)",
-                border: "3px solid #7C2D12",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.15)",
-              }}
-            />
-            {/* 림 하이라이트 */}
-            <div
-              className="absolute left-4 right-4 rounded-full z-20"
-              style={{
-                top: "16px",
-                height: "14px",
-                background: "linear-gradient(180deg, rgba(255,200,150,0.4) 0%, transparent 100%)",
-              }}
+            <img
+              src="/img/bowl_big.png"
+              alt="그릇"
+              className="w-full h-full object-contain"
+              draggable={false}
             />
 
-            {/* 그릇 몸통 */}
-            <div
-              className="absolute left-0 right-0 overflow-hidden z-0"
-              style={{
-                top: "32px",
-                bottom: "0",
-                borderRadius: "0 0 50% 50%",
-                background: "linear-gradient(180deg, #C2410C 0%, #9A3412 40%, #7C2D12 100%)",
-                border: "3px solid #7C2D12",
-                borderTop: "none",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.5), inset -8px 0 20px rgba(0,0,0,0.2)",
-              }}
-            >
-              {/* 국물 — 맵기에 따라 색상 변화 */}
-              <div
-                className="absolute left-0 right-0 bottom-0 transition-all duration-300"
+            {/* 선택된 재료들 */}
+            {selectedIngredients.map((ing, i) => (
+              <img
+                key={ing.id}
+                src={ing.image}
+                alt={ing.name}
+                draggable={false}
+                className="absolute object-contain drop-shadow-md"
                 style={{
-                  height: "75%",
-                  background: selected && selected.peppers >= 3
-                    ? "linear-gradient(180deg, #DC2626 0%, #7F1D1D 100%)"
-                    : "linear-gradient(180deg, #B91C1C 0%, #7F1D1D 100%)",
-                  borderRadius: "0 0 50% 50%",
-                  opacity: 0.95,
+                  top: ing.position.top,
+                  left: ing.position.left,
+                  width: ing.position.width,
+                  zIndex: 10 + i,
                 }}
               />
+            ))}
 
-              {/* 맵기 시각화: 얼굴 + 고추 */}
-              <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-1"
-                style={{ paddingTop: "38%" }}
-              >
-                {/* 표정 이모지 */}
-                <span
-                  className="leading-none drop-shadow transition-all duration-300"
-                  style={{ fontSize: "46px" }}
-                >
-                  {selected ? selected.face : "🤔"}
-                </span>
-
-                {/* 고추 이모지 (단계만큼 표시) */}
-                {selected && selected.peppers > 0 && (
-                  <div className="flex gap-0.5">
-                    {Array.from({ length: selected.peppers }).map((_, i) => (
-                      <span
-                        key={i}
-                        className="leading-none drop-shadow"
-                        style={{
-                          fontSize: "18px",
-                          transform: `rotate(${(i - Math.floor(selected.peppers / 2)) * 20}deg)`,
-                        }}
-                      >
-                        🌶️
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+            {/* 맵기 빨간 오버레이 */}
+            <div
+              className="absolute transition-opacity duration-300 pointer-events-none"
+              style={{
+                backgroundColor: "#dc2626",
+                opacity: overlayOpacity,
+                mixBlendMode: "multiply",
+                borderRadius: "50%",
+                zIndex: 50,
+                ...OVERLAY_STYLE,
+              }}
+            />
           </div>
         </div>
 

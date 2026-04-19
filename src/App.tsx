@@ -48,6 +48,7 @@ export default function App() {
     return (
       <SpiceScreen
         spiceLevel={spiceLevel}
+        selectedIngredients={selectedIngredients}
         onSelect={setSpiceLevel}
         onBack={() => setScreen("ingredients")}
         onNext={() => setScreen("sauce")}
