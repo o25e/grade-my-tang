@@ -1,4 +1,5 @@
 import { useGameState } from "./hooks/useGameState";
+import { useBGM } from "./hooks/useBGM";
 import TitleScreen        from "./components/Screens/TitleScreen";
 import InstructionsScreen from "./components/Screens/InstructionsScreen";
 import ManualScreen       from "./components/Screens/ManualScreen";
@@ -20,6 +21,10 @@ export default function App() {
     submitResult,
     reset,
   } = useGameState();
+
+  // 게임 화면(재료선택/맵기선택/소스선택) 중일 때 배경음 재생
+  const isGameScreen = ["ingredients", "spice", "sauce"].includes(screen);
+  useBGM(isGameScreen, "/sounds/gamebgm.mp3", 0.3);
 
   if (screen === "title") {
     return (

@@ -50,7 +50,7 @@ export function useGameState(): GameState {
     setSpiceLevel(null);
     setSelectedSauces([]);
     setEnding(null);
-    setScreen("title");
+    setScreen("ingredients");
   };
 
   return {
