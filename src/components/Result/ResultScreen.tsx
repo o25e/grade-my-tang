@@ -115,32 +115,32 @@ export default function ResultScreen({
       </div>
 
       {/* Layer 4: 말풍선 — 3줄 멘트 (타이틀 제거) */}
-      <div className="absolute top-8 left-16" style={{ zIndex: 20 }}>
+      <div className="absolute top-16 left-16" style={{ zIndex: 20 }}>
         <div className="relative">
           <img
-            src="/img/chat.png"
+            src="/img/chat2.png"
             alt="말풍선"
-            style={{ width: "370px", objectFit: "contain" }}
+            style={{ width: "390px", objectFit: "contain" }}
           />
           <div
             className="absolute flex flex-col justify-center gap-2 px-6"
-            style={{ top: "12%", left: "6%", right: "10%", bottom: "22%" }}
+            style={{ top: "18%", left: "8%", right: "10%", bottom: "22%" }}
           >
             <p
-              className="text-xs font-semibold leading-snug text-gray-800"
-              style={{ opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "0.2s" }}
+              className="font-semibold leading-snug text-gray-800"
+              style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "0.2s" }}
             >
               {c0}
             </p>
             <p
-              className="text-xs font-semibold leading-snug text-gray-800"
-              style={{ opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "1.0s" }}
+              className="font-semibold leading-snug text-gray-800"
+              style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "1.0s" }}
             >
               {c1}
             </p>
             <p
-              className="text-xs font-semibold leading-snug text-gray-800"
-              style={{ opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "1.8s" }}
+              className="font-semibold leading-snug text-gray-800"
+              style={{ fontSize: "20px", opacity: 0, animation: "fadeSlideIn 0.5s ease forwards", animationDelay: "1.8s" }}
             >
               {c2}
             </p>
