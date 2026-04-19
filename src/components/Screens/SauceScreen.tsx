@@ -50,7 +50,7 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
             }}
           >
             {"소스선택".split("").map((ch, i) => (
-              <span key={i} className="font-black text-amber-900 leading-tight" style={{ fontSize: "22px" }}>
+              <span key={i} className="font-black text-amber-900 leading-tight" style={{ fontSize: "30px" }}>
                 {ch}
               </span>
             ))}

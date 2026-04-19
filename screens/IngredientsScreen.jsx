@@ -30,7 +30,7 @@ export default function IngredientsScreen({
               minHeight: "120px",
             }}>
             {"재료선택".split("").map((ch, i) => (
-              <span key={i} className="font-black text-amber-900 leading-tight" style={{ fontSize: "13px" }}>
+              <span key={i} className="font-black text-amber-900 leading-tight" style={{ fontSize: "28px" }}>
                 {ch}
               </span>
             ))}

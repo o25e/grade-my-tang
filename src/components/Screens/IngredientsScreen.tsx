@@ -57,7 +57,7 @@ export default function IngredientsScreen({
               borderColor: "#92400E",
             }}>
             {"재료선택".split("").map((ch, i) => (
-              <span key={i} className="font-black text-amber-900 leading-tight" style={{ fontSize: "22px" }}>
+              <span key={i} className="font-black text-amber-900 leading-tight" style={{ fontSize: "30px" }}>
                 {ch}
               </span>
             ))}
@@ -162,7 +162,7 @@ export default function IngredientsScreen({
                       : "0 2px 4px rgba(0,0,0,0.3)",
                   }}
                 >
-                  <span style={{ fontSize: "13px", lineHeight: 1.2, textAlign: "center", fontWeight: 700 }}>{item.name}</span>
+                  <span style={{ fontSize: "28px", lineHeight: 1.2, textAlign: "center", fontWeight: 700 }}>{item.name}</span>
                 </button>
               );
             })}
