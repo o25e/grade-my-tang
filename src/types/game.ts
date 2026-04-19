@@ -16,6 +16,7 @@ export interface Sauce {
   name: string;
   emoji: string;
   image: string;
+  position: { top: string; left: string; width: string };
 }
 
 // ─── 맵기 단계 ────────────────────────────────────────────────────────────────

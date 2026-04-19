@@ -10,14 +10,6 @@ interface SauceScreenProps {
 const row1 = SAUCES.slice(0, 3);
 const row2 = SAUCES.slice(3, 6);
 
-function getSauceOffset(i: number) {
-  const angle = (i * 137.5 * Math.PI) / 180;
-  const radius = 18 + (i % 3) * 14;
-  return {
-    x: Math.round(Math.cos(angle) * radius),
-    y: Math.round(Math.sin(angle) * radius * 0.5),
-  };
-}
 
 export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit }: SauceScreenProps) {
   const canSubmit = selectedSauces.length >= 2;
@@ -57,7 +49,7 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
 
         {/* 중앙 그릇 (PNG) + 선택된 소스 오버레이 */}
         <div className="transition-transform duration-200">
-          <div className="relative" style={{ width: "260px", height: "220px" }}>
+          <div className="relative" style={{ width: "400px", height: "360px" }}>
             <img
               src="/img/bowl_sauce.png"
               alt="소스 그릇"
@@ -69,13 +61,12 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
                 className="absolute text-3xl"
                 style={{ left: "50%", top: "58%", transform: "translate(-50%, -50%)", opacity: 0.4 }}
               >
-                🥢
+                
               </span>
             ) : (
               selectedSauces.map((id, i) => {
                 const sauce = SAUCES.find((s) => s.id === id);
                 if (!sauce) return null;
-                const { x, y } = getSauceOffset(i);
                 return (
                   <img
                     key={id}
@@ -84,12 +75,10 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
                     draggable={false}
                     className="absolute object-contain drop-shadow-md"
                     style={{
-                      width: "40px",
-                      height: "40px",
-                      left: `calc(50% + ${x}px - 20px)`,
-                      top: `calc(58% + ${y}px - 20px)`,
+                      top: sauce.position.top,
+                      left: sauce.position.left,
+                      width: sauce.position.width,
                       zIndex: 10 + i,
-                      transform: `rotate(${(i * 43) % 60 - 30}deg)`,
                     }}
                   />
                 );

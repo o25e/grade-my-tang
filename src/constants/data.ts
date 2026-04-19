@@ -40,12 +40,12 @@ export const ALL_ITEMS: Ingredient[] = [
 
 // ─── 소스 ─────────────────────────────────────────────────────────────────────
 export const SAUCES: Sauce[] = [
-  { id: "peanut",     name: "땅콩소스", emoji: "🥜", image: "/img/peanut.png"      },
-  { id: "buldak",     name: "불닭소스", emoji: "🌶️", image: "/img/buldak.png"    },
-  { id: "chilioil",   name: "고추기름", emoji: "🌶️", image: "/img/spicy.png"    },
-  { id: "mintchoco",  name: "민트초코", emoji: "🍫", image: "/img/mint.png"      },
-  { id: "cilantro",   name: "고수",     emoji: "🌿", image: "/img/cilantro.png"     },
-  { id: "greenonion", name: "대파",     emoji: "🧅", image: "/img/leek.png"  },
+  { id: "peanut",     name: "땅콩소스", emoji: "🥜", image: "/img/peanut.png",    position: { top: "36%", left: "28%", width: "120px" } },
+  { id: "buldak",     name: "불닭소스", emoji: "🌶️", image: "/img/buldak.png",   position: { top: "39%", left: "42%", width: "100px" } },
+  { id: "chilioil",   name: "고추기름", emoji: "🌶️", image: "/img/spicy.png",    position: { top: "37%", left: "42%", width: "48px" } },
+  { id: "mintchoco",  name: "민트초코", emoji: "🍫", image: "/img/mint.png",      position: { top: "38%", left: "55%", width: "55px" } },
+  { id: "cilantro",   name: "고수",     emoji: "🌿", image: "/img/cilantro.png",  position: { top: "40%", left: "26%", width: "64px" } },
+  { id: "greenonion", name: "대파",     emoji: "🧅", image: "/img/leek.png",      position: { top: "42%", left: "35%", width: "90px" } },
 ];
 
 // ─── 맵기 단계 ────────────────────────────────────────────────────────────────
