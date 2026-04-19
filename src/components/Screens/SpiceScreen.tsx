@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { SPICE_LEVELS } from "../../constants/data";
 import { Ingredient } from "../../types/game";
 import WarningModal from "./WarningModal";
+import { useSound } from "../../hooks/useSound";
 
 const OVERLAY_OPACITY: Record<number, number> = { 0: 0, 1: 0.25, 2: 0.40, 3: 0.65, 4: 0.80 };
 
@@ -22,6 +23,7 @@ interface SpiceScreenProps {
 }
 
 export default function SpiceScreen({ spiceLevel, selectedIngredients, onSelect, onBack, onNext }: SpiceScreenProps) {
+  const { playHover, playClick, playTransition } = useSound();
   const selected   = spiceLevel !== null ? SPICE_LEVELS[spiceLevel] : null;
   const canProceed = spiceLevel !== null;
   const overlayOpacity = spiceLevel !== null ? OVERLAY_OPACITY[spiceLevel] : 0;
@@ -35,6 +37,7 @@ export default function SpiceScreen({ spiceLevel, selectedIngredients, onSelect,
 
   function handleNext() {
     if (!canProceed) { setShowWarning(true); return; }
+    playTransition();
     onNext();
   }
 
@@ -129,7 +132,7 @@ export default function SpiceScreen({ spiceLevel, selectedIngredients, onSelect,
 {/* 이전/다음 버튼 — 선택 버튼 위, 왼쪽/오른쪽 */}
       <div className="flex justify-between px-2 pb-1 flex-shrink-0">
         <button
-          onClick={onBack}
+          onClick={() => { playTransition(); onBack(); }}
           className="group transition-all duration-75 active:scale-90"
         >
           <img
@@ -178,7 +181,8 @@ export default function SpiceScreen({ spiceLevel, selectedIngredients, onSelect,
             return (
               <button
                 key={sp.level}
-                onClick={() => onSelect(sp.level)}
+                onMouseEnter={playHover}
+                onClick={() => { playClick(); onSelect(sp.level); }}
                 className={`flex flex-col items-center justify-center gap-1 rounded-lg font-bold
                            transition-all duration-150 flex-1 border-2 border-b-4
                            hover:translate-y-0.5 hover:border-b-2

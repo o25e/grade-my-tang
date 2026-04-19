@@ -1,9 +1,18 @@
+import { useEffect } from "react";
+import { useSound } from "../../hooks/useSound";
+
 interface WarningModalProps {
   message: string;
   visible: boolean;
 }
 
 export default function WarningModal({ message, visible }: WarningModalProps) {
+  const { playWarning } = useSound();
+
+  useEffect(() => {
+    if (visible) playWarning();
+  }, [visible]);
+
   if (!visible) return null;
 
   return (

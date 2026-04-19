@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { SAUCES } from "../../constants/data";
 import WarningModal from "./WarningModal";
+import { useSound } from "../../hooks/useSound";
 
 interface SauceScreenProps {
   selectedSauces: string[];
@@ -14,6 +15,7 @@ const row2 = SAUCES.slice(3, 6);
 
 
 export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit }: SauceScreenProps) {
+  const { playHover, playClick, playTransition } = useSound();
   const canSubmit = selectedSauces.length >= 2;
   const [showWarning, setShowWarning] = useState(false);
 
@@ -25,6 +27,7 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
 
   function handleSubmit() {
     if (!canSubmit) { setShowWarning(true); return; }
+    playTransition();
     onSubmit();
   }
 
@@ -116,7 +119,7 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
 {/* 이전/제출 버튼 — 선택 버튼 위, 왼쪽/오른쪽 */}
       <div className="flex justify-between px-2 pb-1 flex-shrink-0">
         <button
-          onClick={onBack}
+          onClick={() => { playTransition(); onBack(); }}
           className="group transition-all duration-75 active:scale-90"
         >
           <img
@@ -166,7 +169,8 @@ export default function SauceScreen({ selectedSauces, onToggle, onBack, onSubmit
               return (
                 <button
                   key={sauce.id}
-                  onClick={() => onToggle(sauce.id)}
+                  onMouseEnter={playHover}
+                  onClick={() => { playClick(); onToggle(sauce.id); }}
                   className={`flex items-center justify-center rounded-lg font-bold
                              transition-all duration-150 flex-1 border-2 border-b-4
                              hover:translate-y-0.5 hover:border-b-2

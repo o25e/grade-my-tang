@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Ingredient } from "../../types/game";
 import { ALL_ITEMS } from "../../constants/data";
 import WarningModal from "./WarningModal";
+import { useSound } from "../../hooks/useSound";
 
 const row1 = ALL_ITEMS.slice(0, 7);
 const row2 = ALL_ITEMS.slice(7, 14);
@@ -20,6 +21,7 @@ export default function IngredientsScreen({
   onToggle,
   onNext,
 }: IngredientsScreenProps) {
+  const { playHover, playClick, playTransition } = useSound();
   const canProceed = selectedIngredients.length >= 5;
   const [showWarning, setShowWarning] = useState(false);
   const [warningMsg, setWarningMsg] = useState("");
@@ -36,6 +38,7 @@ export default function IngredientsScreen({
       setShowWarning(true);
       return;
     }
+    playTransition();
     onNext();
   }
 
@@ -142,7 +145,8 @@ export default function IngredientsScreen({
               return (
                 <button
                   key={item.id}
-                  onClick={() => onToggle(item)}
+                  onMouseEnter={playHover}
+                  onClick={() => { playClick(); onToggle(item); }}
                   className={`flex items-center justify-center rounded-lg font-bold
                              transition-all duration-150 flex-1 border-2 border-b-4
                              hover:translate-y-0.5 hover:border-b-2
