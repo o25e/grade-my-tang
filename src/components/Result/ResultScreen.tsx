@@ -55,7 +55,7 @@ export default function ResultScreen({
     const boomId = setTimeout(playBoom, 5200);
     // 100점: grade 등장(5.2s + 0.45s 애니) 후 1초 = 6700ms
     // 나머지: 최종 한줄 평가 등장(7.2s) 후 1초 = 8200ms
-    const rankDelay = ending.score === 100 ? 6700 : 8200;
+    const rankDelay = ending.score === 100 ? 7300 : 8800;
     const rankId = setTimeout(triggerRanking, rankDelay);
     return () => { ids.forEach(clearTimeout); clearTimeout(boomId); clearTimeout(rankId); };
   }, [playText, playBoom, triggerRanking, ending.score]);
@@ -87,17 +87,22 @@ export default function ResultScreen({
     ending.score >= 30 ? "흠.. 정말 최선이었나? \n 다시 말아주게나." :
     "정말 맛이 없군!!! \n 다시 말아오게나.";
 
+  // ── 랭킹 버튼 위치 조정 ──────────────────────────
+  const RANK_BTN_POS = { bottom: 105, right: 40 };
+  // ────────────────────────────────────────────────
+
   const rankBtnBase: React.CSSProperties = {
     background: rankingHovered ? "#B45309" : "#D97706",
     border: "2px solid #92400E",
     borderRadius: "8px",
-    padding: "7px 18px",
+    padding: "4px 10px",
     color: "#FFFBEB",
-    fontSize: "16px",
+    fontSize: "20px",
     cursor: "pointer",
     fontFamily: "'BazziGame', sans-serif",
     boxShadow: "0 3px 0 #92400E",
-    width: "100%",
+    display: "inline-flex",
+    whiteSpace: "nowrap",
     transition: "background 0.1s",
   };
 
@@ -281,35 +286,30 @@ export default function ResultScreen({
         </div>
       </div>
 
-      {/* 버튼 영역 — 우측 하단 */}
-      <div
-        className="absolute flex flex-col items-stretch gap-2"
-        style={{ zIndex: 40, bottom: 10, right: 11, width: "230px" }}
+      {/* 랭킹 버튼 */}
+      <button
+        onClick={() => { playPop(); onShowRanking(); }}
+        onMouseEnter={() => setRankingHovered(true)}
+        onMouseLeave={() => setRankingHovered(false)}
+        style={{ ...rankBtnBase, position: "absolute", zIndex: 40, bottom: RANK_BTN_POS.bottom, right: RANK_BTN_POS.right }}
       >
-        {/* 랭킹 버튼 */}
-        <button
-          onClick={() => { playPop(); onShowRanking(); }}
-          onMouseEnter={() => setRankingHovered(true)}
-          onMouseLeave={() => setRankingHovered(false)}
-          style={rankBtnBase}
-        >
-          🌶️ 랭킹 보기
-        </button>
+        🌶️ 랭킹 보기
+      </button>
 
-        {/* 다시 도전 버튼 */}
-        <button
-          onClick={() => { playPop(); onReset(); }}
-          onMouseEnter={() => setRestartHovered(true)}
-          onMouseLeave={() => setRestartHovered(false)}
-          className="bg-transparent border-none p-0 cursor-pointer transition-all duration-75 active:scale-95 active:translate-y-1"
-        >
-          <img
-            src={restartHovered ? "/img/button_restart_hover.webp" : "/img/button_restart.webp"}
-            alt="다시 도전"
-            style={{ width: 230 }}
-          />
-        </button>
-      </div>
+      {/* 다시 도전 버튼 */}
+      <button
+        onClick={() => { playPop(); onReset(); }}
+        onMouseEnter={() => setRestartHovered(true)}
+        onMouseLeave={() => setRestartHovered(false)}
+        className="absolute bg-transparent border-none p-0 cursor-pointer transition-all duration-75 active:scale-95 active:translate-y-1"
+        style={{ zIndex: 40, bottom: 10, right: 11 }}
+      >
+        <img
+          src={restartHovered ? "/img/button_restart_hover.webp" : "/img/button_restart.webp"}
+          alt="다시 도전"
+          style={{ width: 230 }}
+        />
+      </button>
     </div>
   );
 }
