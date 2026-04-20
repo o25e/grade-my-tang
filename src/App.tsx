@@ -24,20 +24,24 @@ import ResultScreen       from "./components/Result/ResultScreen";
 
 export default function App() {
   // ── 유저 / 폼 상태 ──────────────────────────────────────────────────────────
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const saved = localStorage.getItem("maratang_user");
-      return saved ? (JSON.parse(saved) as UserInfo) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   // 시작하기 버튼을 눌러야 수강신청 폼 표시
   const [showForm, setShowForm]       = useState(false);
   // 폼 완료 후 게임을 바로 시작해야 하는지 여부 (시작하기/게임방법→게임시작 경로)
   const [pendingGame, setPendingGame] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
+
+  // 하이드레이션 오류 방지: useEffect 내에서만 localStorage 접근
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("maratang_user_fixed");
+      if (saved) {
+        setUserInfo(JSON.parse(saved) as UserInfo);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     PRELOAD_IMAGES.forEach(src => {
@@ -67,7 +71,7 @@ export default function App() {
 
   // ── 수강신청 폼 핸들러 ───────────────────────────────────────────────────────
   const handleRegister = (info: UserInfo) => {
-    localStorage.setItem("maratang_user", JSON.stringify(info));
+    localStorage.setItem("maratang_user_fixed", JSON.stringify(info));
     setUserInfo(info);
     setShowForm(false);
     if (pendingGame) {
@@ -91,12 +95,6 @@ export default function App() {
     }
   }, [userInfo, setScreen]);
 
-  // ── 계정 전환 (로그아웃) ──────────────────────────────────────────────────────
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem("maratang_user");
-    setUserInfo(null);
-  }, []);
-
   // ── 랭킹 핸들러 ─────────────────────────────────────────────────────────────
   const openRanking  = useCallback(() => setShowRanking(true),  []);
   const closeRanking = useCallback(() => setShowRanking(false), []);
@@ -114,7 +112,6 @@ export default function App() {
           onInstructions={() => setScreen("manual")}
           onShowRanking={openRanking}
           userInfo={userInfo}
-          onLogout={handleLogout}
         />
       );
     }

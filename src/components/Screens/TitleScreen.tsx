@@ -7,10 +7,9 @@ interface TitleScreenProps {
   onInstructions: () => void;
   onShowRanking: () => void;
   userInfo?: UserInfo | null;
-  onLogout?: () => void;
 }
 
-export default function TitleScreen({ onStart, onInstructions, onShowRanking, userInfo, onLogout }: TitleScreenProps) {
+export default function TitleScreen({ onStart, onInstructions, onShowRanking, userInfo }: TitleScreenProps) {
   const { playPop } = useSound();
   const [startHover, setStartHover] = useState(false);
   const [manualHover, setManualHover] = useState(false);
@@ -53,7 +52,7 @@ export default function TitleScreen({ onStart, onInstructions, onShowRanking, us
         </button>
       </div>
 
-      {/* 유저 정보 / 계정 전환 — 좌측 상단 */}
+      {/* 유저 정보 — 좌측 상단 (읽기 전용) */}
       {userInfo && (
         <div
           style={{
@@ -61,9 +60,6 @@ export default function TitleScreen({ onStart, onInstructions, onShowRanking, us
             top: "12px",
             left: "16px",
             zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
             background: "rgba(0,0,0,0.45)",
             borderRadius: "8px",
             padding: "5px 10px",
@@ -72,22 +68,7 @@ export default function TitleScreen({ onStart, onInstructions, onShowRanking, us
             fontSize: "13px",
           }}
         >
-          <span>🌶️ {userInfo.id} · {userInfo.university}</span>
-          <button
-            onClick={() => { playPop(); onLogout?.(); }}
-            style={{
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.4)",
-              borderRadius: "5px",
-              color: "#FFFBEB",
-              fontSize: "12px",
-              cursor: "pointer",
-              padding: "2px 7px",
-              fontFamily: "'BazziGame', sans-serif",
-            }}
-          >
-            계정 전환
-          </button>
+          🌶️ {userInfo.id} · {userInfo.university}
         </div>
       )}
 

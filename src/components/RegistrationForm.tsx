@@ -74,7 +74,7 @@ export default function RegistrationForm({ onSubmit, onCancel }: RegistrationFor
           {idError && <span style={{ fontSize: "12px", color: "#EF4444" }}>아이디를 입력해주세요!</span>}
         </div>
 
-        {/* 소속 */}
+        {/* 전공 */}
         <div style={{ marginBottom: "22px" }}>
           <label style={{ display: "block", fontSize: "15px", color: "#92400E", marginBottom: "5px" }}>
             마라탕 최애 재료

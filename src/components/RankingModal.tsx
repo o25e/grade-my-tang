@@ -117,7 +117,7 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
               borderBottom: "2px solid #D97706",
             }}
           >
-            {(["순위", "아이디", "소속", "최고점수", "판수"] as const).map((h, i) => (
+            {(["순위", "아이디", "전공", "최고점수", "판수"] as const).map((h, i) => (
               <span
                 key={h}
                 style={{
