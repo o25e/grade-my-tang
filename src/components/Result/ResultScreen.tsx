@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Ending, Ingredient } from "../../types/game";
 import { useSound } from "../../hooks/useSound";
 
@@ -39,15 +39,26 @@ export default function ResultScreen({
     return img.complete;
   });
 
+  // onShowRanking을 ref에 저장해 클로저 stale 방지 + 1회만 실행 보장
+  const onShowRankingRef = useRef(onShowRanking);
+  useEffect(() => { onShowRankingRef.current = onShowRanking; }, [onShowRanking]);
+  const rankingFired = useRef(false);
+  const triggerRanking = useCallback(() => {
+    if (!rankingFired.current) {
+      rankingFired.current = true;
+      onShowRankingRef.current();
+    }
+  }, []);
+
   useEffect(() => {
     const ids = [500, 2000, 3500].map(delay => setTimeout(playText, delay));
     const boomId = setTimeout(playBoom, 5200);
-    // 성적 등장(5.2s) 이후 1.3s 뒤에 랭킹 자동 팝업
-    const rankId = setTimeout(onShowRanking, 6500);
+    // 100점: grade 등장(5.2s + 0.45s 애니) 후 1초 = 6700ms
+    // 나머지: 최종 한줄 평가 등장(7.2s) 후 1초 = 8200ms
+    const rankDelay = ending.score === 100 ? 6700 : 8200;
+    const rankId = setTimeout(triggerRanking, rankDelay);
     return () => { ids.forEach(clearTimeout); clearTimeout(boomId); clearTimeout(rankId); };
-  // onShowRanking은 stable ref이므로 deps 경고 무시
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playText, playBoom]);
+  }, [playText, playBoom, triggerRanking, ending.score]);
 
   useEffect(() => {
     if (ending.score === 100) return;
@@ -282,7 +293,7 @@ export default function ResultScreen({
           onMouseLeave={() => setRankingHovered(false)}
           style={rankBtnBase}
         >
-          📋 랭킹 보기
+          🌶️ 랭킹 보기
         </button>
 
         {/* 다시 도전 버튼 */}

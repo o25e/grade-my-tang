@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useGameState } from "./hooks/useGameState";
 import { useBGM } from "./hooks/useBGM";
 import { UserInfo } from "./types/game";
-import MobileBanner from "./components/MobileBanner";
-import RankingModal from "./components/RankingModal";
+import MobileBanner     from "./components/MobileBanner";
+import RankingModal     from "./components/RankingModal";
+import RegistrationForm from "./components/RegistrationForm";
 
 const PRELOAD_IMAGES = [
   "/img/screen/game_result.webp",
@@ -22,7 +23,12 @@ import TastingScreen      from "./components/Screens/TastingScreen";
 import ResultScreen       from "./components/Result/ResultScreen";
 
 export default function App() {
+  // ── 유저 / 폼 상태 ──────────────────────────────────────────────────────────
   const [userInfo, setUserInfo]       = useState<UserInfo | null>(null);
+  // 시작하기 버튼을 눌러야 수강신청 폼 표시
+  const [showForm, setShowForm]       = useState(false);
+  // 폼 완료 후 게임을 바로 시작해야 하는지 여부 (시작하기/게임방법→게임시작 경로)
+  const [pendingGame, setPendingGame] = useState(false);
   const [showRanking, setShowRanking] = useState(false);
 
   useEffect(() => {
@@ -51,24 +57,45 @@ export default function App() {
   useBGM(isGameScreen,  "/sounds/gamebgm.mp3",  0.3);
   useBGM(isTitleScreen, "/sounds/titlebgm.mp3", 0.3);
 
-  const handleStart = (info: UserInfo) => {
+  // ── 수강신청 폼 핸들러 ───────────────────────────────────────────────────────
+  const handleRegister = (info: UserInfo) => {
     setUserInfo(info);
-    setScreen("ingredients");
+    setShowForm(false);
+    if (pendingGame) {
+      setPendingGame(false);
+      setScreen("ingredients");
+    }
   };
 
-  const handleHome = () => {
+  const handleFormCancel = () => {
+    setShowForm(false);
+    setPendingGame(false);
+  };
+
+  // ── 게임 시작 (수강신청 여부 확인) ────────────────────────────────────────────
+  const handleStartGame = useCallback(() => {
+    if (userInfo) {
+      setScreen("ingredients");
+    } else {
+      setPendingGame(true);
+      setShowForm(true);
+    }
+  }, [userInfo, setScreen]);
+
+  // ── 랭킹 핸들러 ─────────────────────────────────────────────────────────────
+  const openRanking  = useCallback(() => setShowRanking(true),  []);
+  const closeRanking = useCallback(() => setShowRanking(false), []);
+  const handleHome   = useCallback(() => {
     setShowRanking(false);
     setScreen("title");
-  };
+  }, [setScreen]);
 
-  const openRanking  = () => setShowRanking(true);
-  const closeRanking = () => setShowRanking(false);
-
+  // ── 화면 렌더링 ──────────────────────────────────────────────────────────────
   const renderScreen = () => {
     if (screen === "title") {
       return (
         <TitleScreen
-          onStart={handleStart}
+          onStart={handleStartGame}
           onInstructions={() => setScreen("manual")}
           onShowRanking={openRanking}
         />
@@ -76,7 +103,7 @@ export default function App() {
     }
 
     if (screen === "manual") {
-      return <ManualScreen onStart={() => setScreen("ingredients")} />;
+      return <ManualScreen onStart={handleStartGame} />;
     }
 
     if (screen === "instructions") {
@@ -148,7 +175,14 @@ export default function App() {
       <MobileBanner />
       <div className="relative w-full h-full">
         {renderScreen()}
-        {showRanking && (
+
+        {/* 수강신청 폼 — 타이틀 화면 위에 오버레이 (zIndex 200) */}
+        {showForm && (
+          <RegistrationForm onSubmit={handleRegister} onCancel={handleFormCancel} />
+        )}
+
+        {/* 랭킹 모달 — 최상단 (zIndex 100, 폼이 없을 때만 표시) */}
+        {showRanking && !showForm && (
           <RankingModal
             currentUser={userInfo}
             onClose={closeRanking}

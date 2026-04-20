@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RankEntry, UserInfo } from "../types/game";
 import { getRankings } from "../utils/ranking";
 
@@ -13,6 +13,9 @@ const COL = "44px 1fr 1fr 72px 52px";
 export default function RankingModal({ currentUser, onClose, onHome }: RankingModalProps) {
   const [top10, setTop10] = useState<RankEntry[]>([]);
   const [myEntry, setMyEntry] = useState<{ rank: number; entry: RankEntry } | null>(null);
+  // 항상 최신 콜백을 ref에 보관 (stale closure 방지)
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
 
   useEffect(() => {
     const all = getRankings();
@@ -54,7 +57,7 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
     <div
       className="absolute inset-0 flex items-center justify-center"
       style={{ zIndex: 100, background: "rgba(0,0,0,0.72)" }}
-      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={e => { if (e.target === e.currentTarget) onCloseRef.current(); }}
     >
       <div
         style={{
@@ -78,10 +81,10 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
           }}
         >
           <span style={{ fontSize: "22px", color: "#FFFBEB", fontWeight: "bold" }}>
-            📋 수강생 랭킹
+            🌶️ 마라고수 랭킹
           </span>
           <button
-            onClick={onClose}
+            onClick={e => { e.stopPropagation(); onClose(); }}
             style={{
               background: "rgba(0,0,0,0.22)",
               border: "none",
@@ -96,6 +99,7 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              flexShrink: 0,
             }}
           >
             ✕
@@ -189,7 +193,7 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
             onMouseDown={e => (e.currentTarget.style.transform = "translateY(2px)")}
             onMouseUp={e => (e.currentTarget.style.transform = "")}
           >
-            🏠 메인으로
+            메인으로
           </button>
         </div>
       </div>
