@@ -16,16 +16,20 @@ export async function getRankings(): Promise<RankEntry[]> {
 }
 
 export async function updateRanking(user: UserInfo, score: number): Promise<void> {
-  // 기존 기록 조회
-  const { data: existing } = await supabase
+  const { data: existing, error: selectError } = await supabase
     .from("rankings")
     .select("high_score, play_count")
     .eq("id", user.id)
     .eq("university", user.university)
     .maybeSingle();
 
+  if (selectError) {
+    console.error("updateRanking select error:", selectError);
+    throw selectError;
+  }
+
   if (existing) {
-    await supabase
+    const { error: updateError } = await supabase
       .from("rankings")
       .update({
         high_score: Math.max(existing.high_score, score),
@@ -33,9 +37,17 @@ export async function updateRanking(user: UserInfo, score: number): Promise<void
       })
       .eq("id", user.id)
       .eq("university", user.university);
+    if (updateError) {
+      console.error("updateRanking update error:", updateError);
+      throw updateError;
+    }
   } else {
-    await supabase
+    const { error: insertError } = await supabase
       .from("rankings")
       .insert({ id: user.id, university: user.university, high_score: score, play_count: 1 });
+    if (insertError) {
+      console.error("updateRanking insert error:", insertError);
+      throw insertError;
+    }
   }
 }
