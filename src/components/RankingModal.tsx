@@ -8,10 +8,10 @@ interface RankingModalProps {
   onHome: () => void;
 }
 
-const COL = "44px 1fr 1fr 72px 52px";
+const COL = "54px 1fr 1fr 72px 52px";
 
 export default function RankingModal({ currentUser, onClose, onHome }: RankingModalProps) {
-  const [top10, setTop10] = useState<RankEntry[]>([]);
+  const [top20, setTop20] = useState<RankEntry[]>([]);
   const [myEntry, setMyEntry] = useState<{ rank: number; entry: RankEntry } | null>(null);
   // 항상 최신 콜백을 ref에 보관 (stale closure 방지)
   const onCloseRef = useRef(onClose);
@@ -19,7 +19,7 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
 
   useEffect(() => {
     const all = getRankings();
-    setTop10(all.slice(0, 10));
+    setTop20(all.slice(0, 20));
     if (currentUser) {
       const idx = all.findIndex(
         r => r.id === currentUser.id && r.university === currentUser.university
@@ -28,7 +28,7 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
     }
   }, [currentUser]);
 
-  const isInTop10 = myEntry !== null && myEntry.rank <= 10;
+  const isInTop20 = myEntry !== null && myEntry.rank <= 20;
 
   const rankLabel = (i: number) =>
     i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`;
@@ -117,10 +117,15 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
               borderBottom: "2px solid #D97706",
             }}
           >
-            {["순위", "아이디", "소속", "최고점수", "판수"].map(h => (
+            {(["순위", "아이디", "소속", "최고점수", "판수"] as const).map((h, i) => (
               <span
                 key={h}
-                style={{ fontSize: "13px", color: "#92400E", fontWeight: "bold", textAlign: "center" }}
+                style={{
+                  fontSize: "13px",
+                  color: "#92400E",
+                  fontWeight: "bold",
+                  textAlign: i === 1 || i === 2 ? "left" : "center",
+                }}
               >
                 {h}
               </span>
@@ -128,14 +133,14 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
           </div>
 
           {/* ── 랭킹 행 ── */}
-          <div style={{ padding: "6px 0", minHeight: "180px" }}>
-            {top10.length === 0 ? (
+          <div style={{ padding: "6px 0", maxHeight: "320px", overflowY: "auto" }}>
+            {top20.length === 0 ? (
               <div style={{ textAlign: "center", padding: "32px 0", color: "#92400E", fontSize: "16px" }}>
                 아직 기록이 없어요!<br />첫 번째 랭커가 되어보세요 🌶️
               </div>
             ) : (
-              top10.map((entry, i) => {
-                const isMe = isInTop10 && myEntry?.rank === i + 1;
+              top20.map((entry: RankEntry, i: number) => {
+                const isMe = isInTop20 && myEntry?.rank === i + 1;
                 return (
                   <div key={`${entry.id}-${entry.university}-${i}`} style={rowStyle(!!isMe, i)}>
                     <span style={{ ...cell(true) }}>{rankLabel(i)}</span>
@@ -152,7 +157,7 @@ export default function RankingModal({ currentUser, onClose, onHome }: RankingMo
           </div>
 
           {/* ── 내 순위 (Top10 밖) ── */}
-          {myEntry && !isInTop10 && (
+          {myEntry && !isInTop20 && (
             <div style={{ borderTop: "1px dashed #D97706", paddingTop: "6px", marginTop: "2px" }}>
               <div style={rowStyle(true, 0)}>
                 <span style={cell(true)}>{myEntry.rank}</span>
