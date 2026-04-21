@@ -2,7 +2,9 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <title>🌶️마라학개론🌶️ 교수님의 미각을 녹여라!</title>
 
     <!-- Primary Meta Tags -->
@@ -32,6 +34,32 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/Favicon.png" />
 
     <link rel="preload" as="image" href="/img/screen/game_bg1.png" />
+
+    <script>
+      function updateGameScale() {
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var scale = Math.min(vw / 920, vh / 608, 1);
+        var offsetX = Math.round((vw - 920 * scale) / 2);
+        var offsetY = Math.round((vh - 608 * scale) / 2);
+        document.documentElement.style.setProperty('--game-scale', scale);
+        document.documentElement.style.setProperty('--game-offset-x', offsetX + 'px');
+        document.documentElement.style.setProperty('--game-offset-y', offsetY + 'px');
+        if (scale < 1) {
+          document.documentElement.style.setProperty('--bowl-h', Math.min(420, Math.round(608 * 0.37)) + 'px');
+        } else {
+          document.documentElement.style.removeProperty('--bowl-h');
+        }
+      }
+      // 초기 추정값 (DOM 준비 전)
+      updateGameScale();
+      // DOM 준비 후 정확한 값으로 재계산 (#root.clientHeight = 100svh 실제 값)
+      document.addEventListener('DOMContentLoaded', updateGameScale);
+      window.addEventListener('resize', updateGameScale);
+      window.addEventListener('orientationchange', function () {
+        setTimeout(updateGameScale, 200);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

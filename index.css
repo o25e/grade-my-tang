@@ -10,20 +10,54 @@
   font-style: normal;
 }
 
-html, body, #root {
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
+  height: 100svh;
+  overflow: hidden;
+  overscroll-behavior: none;
   background-color: #2a2a2a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: #2a2a2a;
   cursor: url('/img/click_cursor.webp') 15 11, auto;
+  /* html,body의 overflow:hidden이 스크롤을 막으므로 #root에는 불필요 */
+  /* overflow:hidden을 두면 transform 전 레이아웃 기준으로 클리핑돼 모바일 세로에서 화면이 잘림 */
 }
 
 *, *:hover, *:active, *:focus {
   cursor: url('/img/click_cursor.webp') 15 11, auto !important;
+}
+
+/* ── 터치 최적화: 300ms 딜레이 제거 & 탭 하이라이트 제거 ── */
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ── 게임 에셋 텍스트 선택 & 롱프레스 메뉴 방지 ── */
+#game-viewport {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#game-viewport img {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: auto;
 }
 
 /* ── professor 효과 애니메이션 ── */
@@ -57,9 +91,12 @@ html, body, #root {
 #game-viewport {
   width: 920px;
   height: 608px;
-  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translate(var(--game-offset-x, 0px), var(--game-offset-y, 0px)) scale(var(--game-scale, 1));
+  transform-origin: 0 0;
   overflow: hidden;
-  position: relative;
   display: flex;
   flex-direction: column;
   font-family: 'BazziGame', sans-serif;

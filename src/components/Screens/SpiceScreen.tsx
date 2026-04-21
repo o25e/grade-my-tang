@@ -76,7 +76,7 @@ export default function SpiceScreen({ spiceLevel, selectedIngredients, onSelect,
 
         {/* 중앙 그릇 — bowl_big.webp + 재료 + 빨간 오버레이 */}
         <div className="transition-transform duration-200 mt-20">
-          <div className="relative" style={{ width: "min(460px, 75vw)", height: "min(420px, 37vh)" }}>
+          <div className="relative" style={{ width: "min(460px, 75vw)", height: "var(--bowl-h, min(420px, 37vh))" }}>
             <WarningModal message={`맵기 단계를\n선택해야 합니다!`} visible={showWarning} />
 
             <img

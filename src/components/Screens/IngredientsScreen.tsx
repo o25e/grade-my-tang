@@ -71,7 +71,7 @@ export default function IngredientsScreen({
 
         {/* 중앙 마라탕 그릇 (PNG 이미지 + 재료 오버레이) */}
         <div className={`transition-transform duration-200 ${bowlPop ? "scale-105" : "scale-100"} mt-20`}>
-          <div className="relative" style={{ width: "min(460px, 75vw)", height: "min(420px, 37vh)" }}>
+          <div className="relative" style={{ width: "min(460px, 75vw)", height: "var(--bowl-h, min(420px, 37vh))" }}>
             <img
               src="/img/bowl_big.webp"
               alt="그릇"
